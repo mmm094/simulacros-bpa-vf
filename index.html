@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulacros V/F de Bases de la Producción Animal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EDF0E8;--paper:#FAFBF7;--ink:#1F2A24;--muted:#5C6B61;--line:#D3DBCF;--field:#3B6B45;--field-ink:#fff;--hay:#A9842A;--pen:#C0362C;--ok:#2E7D4A;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131815;--paper:#1C221E;--ink:#E4E9E2;--muted:#9AA79E;--line:#2E3832;--field:#7FB08A;--field-ink:#0F1511;--hay:#D8B65A;--pen:#EE7A6E;--ok:#7FC796;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131815;--paper:#1C221E;--ink:#E4E9E2;--muted:#9AA79E;--line:#2E3832;--field:#7FB08A;--field-ink:#0F1511;--hay:#D8B65A;--pen:#EE7A6E;--ok:#7FC796;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:17px;line-height:1.5}
+h1,h2,h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;line-height:1.15;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding:28px 18px 60px}
+header{border-bottom:3px solid var(--field);padding-bottom:14px;margin-bottom:22px}
+header h1{font-size:clamp(1.5rem,4.5vw,2.2rem)}
+header p{margin:4px 0 0;color:var(--muted);font-size:.95rem}
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:2px solid var(--field);background:var(--field);color:var(--field-ink);padding:10px 16px;font-weight:700}
+button.ghost{background:transparent;color:var(--field)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,select:focus-visible{outline:3px solid var(--hay);outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+select{font:inherit;padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.note{color:var(--muted);font-size:.92rem}
+ol.qs{list-style:none;margin:0;padding:0;counter-reset:q}
+ol.qs>li{counter-increment:q;padding:14px 0;border-top:1px dashed var(--line)}
+ol.qs>li:first-child{border-top:0}
+.qh{display:flex;gap:10px}
+.qh::before{content:counter(q) ".";font-family:"Bricolage Grotesque",sans-serif;font-weight:700;color:var(--field);min-width:1.8em}
+.qt{flex:1}
+.tema{font-size:.78rem;color:var(--muted);white-space:nowrap}
+.vf{display:flex;gap:8px;margin:10px 0 0 2.3em}
+.vf button{min-width:64px;padding:8px 14px;background:transparent;color:var(--field)}
+.vf button[aria-pressed="true"]{background:var(--field);color:var(--field-ink)}
+.res{margin:8px 0 0 2.3em;font-size:.95rem}
+.res .tag{font-weight:700}
+.ok .tag{color:var(--ok)} .bad .tag{color:var(--pen)} .blank .tag{color:var(--muted)}
+.just{margin-top:4px;padding:8px 10px;background:var(--bg);border-radius:6px}
+.score{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.big{font-family:"Bricolage Grotesque",sans-serif;font-size:4rem;font-weight:700;color:var(--pen);line-height:1;transform:rotate(-4deg);display:inline-block}
+table{width:100%;border-collapse:collapse;font-size:.95rem}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line)}
+td.n{font-weight:700;color:var(--pen)}
+.hidden{display:none}
+.bar{position:sticky;bottom:0;background:var(--bg);padding:10px 0;border-top:1px solid var(--line)}
+footer{margin-top:40px;text-align:center;color:var(--muted);font-size:.9rem}
+@media (max-width:520px){.wrap{padding:18px 12px 40px}.vf,.res{margin-left:0}.tema{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Simulacros V/F de Bases de la Producción Animal</h1>
+  <p>Tipo test de verdadero o falso. Cada 4 fallos restan 1 acierto.</p>
+</header>
+
+<section id="home">
+  <div class="sheet">
+    <p>Las preguntas salen de las evaluaciones de otros años (las de la profesora tienen más probabilidad de salir) y de un banco de afirmaciones por temas. Al corregir verás la respuesta correcta y, si existe, la justificación.</p>
+    <p><label for="nq"><strong>Número de preguntas:</strong></label>
+      <select id="nq"><option>20</option><option>30</option><option selected>60</option><option value="0">Todas</option></select></p>
+    <p><label for="tm"><strong>Temas:</strong></label>
+      <select id="tm"><option value="">Todos (con prioridad)</option></select></p>
+    <div class="actions">
+      <button id="bNew">Empezar simulacro</button>
+      <button id="bFail" class="ghost">Repasar falladas</button>
+    </div>
+    <p id="failInfo" class="note"></p>
+    <p class="note">Puntuación: acierto +1, fallo −0,25, en blanco 0. Nota sobre 10 = (aciertos − fallos/4) / nº de preguntas × 10.</p>
+  </div>
+  <h2 style="margin:26px 0 8px;font-size:1.25rem">Tus simulacros</h2>
+  <div id="hist"></div>
+</section>
+
+<section id="exam" class="hidden">
+  <div class="sheet"><ol class="qs" id="ql"></ol></div>
+  <div class="bar actions"><button id="bGrade">Corregir</button><button id="bQuit" class="ghost">Salir</button><span id="cnt" class="note" style="align-self:center"></span></div>
+</section>
+
+<section id="result" class="hidden">
+  <div class="sheet">
+    <div class="score"><span class="big" id="nota"></span><span id="det" class="note"></span></div>
+    <p class="actions"><button id="fAll" class="ghost" aria-pressed="true">Ver todas</button><button id="fBad" class="ghost">Solo fallos y blancos</button></p>
+    <ol class="qs" id="rl"></ol>
+  </div>
+  <div class="actions"><button id="bAgain">Otro simulacro</button><button id="bHome" class="ghost">Inicio</button></div>
+</section>
+
+<footer>Desarrollado por Miguel Martos Muñoz</footer>
+</div>
+<script src="data.js"></script>
+<script>
+const KEY="bpa-vf-v1";
+const PRIO={9:3,13:3,8:2.5,20:2.5,19:2.5,12:2.5,3:2,4:2,10:2,18:2,21:2,6:1.5,11:1.5,17:1.5,1:1,2:1,5:1,7:1,14:1,15:1,16:0.5};
+const Q=(window.ITEMS||[]).map((x,i)=>({id:i,t:x[0],a:x[1],v:!!x[2],j:x[3]||"",w:x[4]||1}));
+const $=id=>document.getElementById(id);
+const esc=s=>{const d=document.createElement("div");d.textContent=s??"";return d.innerHTML};
+const fmt=n=>(Math.round(n*100)/100).toLocaleString("es-ES",{maximumFractionDigits:2});
+let st=load(), cur=null;
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&s.h)return s}catch(e){}return{h:[],last:{},draft:null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function show(id){["home","exam","result"].forEach(s=>$(s).classList.toggle("hidden",s!==id));scrollTo(0,0)}
+const temas=[...new Set(Q.map(q=>q.t))].sort((a,b)=>a-b);
+$("tm").innerHTML+=temas.map(t=>`<option value="${t}">Tema ${t} (${Q.filter(q=>q.t===t).length})</option>`).join("");
+function pick(pool,n){const out=[],p=[...pool];while(out.length<n&&p.length){const tot=p.reduce((s,q)=>s+q.w*(PRIO[q.t]||1),0);let r=Math.random()*tot,k=0;for(;k<p.length;k++){r-=p[k].w*(PRIO[p[k].t]||1);if(r<=0)break}out.push(p.splice(Math.min(k,p.length-1),1)[0])}return out}
+const fails=()=>Object.entries(st.last).filter(([,v])=>v===false).map(([k])=>+k).filter(i=>Q[i]);
+function start(mode){
+  let n=+$("nq").value, pool=Q;
+  if($("tm").value) pool=Q.filter(q=>q.t===+$("tm").value);
+  if(mode==="fail") pool=fails().map(i=>Q[i]);
+  if(!n||n>pool.length) n=pool.length;
+  const sel=$("tm").value||mode==="fail"? pool.slice().sort(()=>Math.random()-.5).slice(0,n) : pick(pool,n);
+  sel.sort((a,b)=>a.t-b.t);
+  cur={ids:sel.map(q=>q.id),ans:{}}; st.draft=cur; save(); renderExam();
+}
+function renderExam(){
+  $("ql").innerHTML=cur.ids.map(id=>{const q=Q[id],a=cur.ans[id];return`<li><div class="qh"><span class="qt">${esc(q.a)}</span><span class="tema">T${q.t}</span></div>
+  <div class="vf" data-id="${id}"><button data-v="1" aria-pressed="${a===true}">V</button><button data-v="0" aria-pressed="${a===false}">F</button></div></li>`}).join("");
+  $("ql").querySelectorAll(".vf button").forEach(b=>b.onclick=()=>{const id=+b.parentNode.dataset.id,v=b.dataset.v==="1";
+    cur.ans[id]=cur.ans[id]===v?undefined:v; if(cur.ans[id]===undefined)delete cur.ans[id];
+    b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(cur.ans[id]===(x.dataset.v==="1"))));
+    st.draft=cur;save();count()});
+  count(); show("exam");
+}
+function count(){$("cnt").textContent=`${Object.keys(cur.ans).length} de ${cur.ids.length} contestadas`}
+function grade(){
+  let A=0,F=0,B=0;
+  const rows=cur.ids.map(id=>{const q=Q[id],a=cur.ans[id];let s;
+    if(a===undefined){B++;s="blank"}else if(a===q.v){A++;s="ok";st.last[id]=true}else{F++;s="bad";st.last[id]=false}
+    return{q,a,s}});
+  const N=cur.ids.length, nota=Math.max(0,(A-F/4)/N*10);
+  st.h.unshift({d:new Date().toISOString(),nota,A,F,B,N}); st.h=st.h.slice(0,60); st.draft=null; save();
+  $("nota").textContent=fmt(nota);
+  $("det").textContent=`sobre 10 · ${A} aciertos · ${F} fallos (−${fmt(F/4)}) · ${B} en blanco · ${N} preguntas`;
+  $("rl").innerHTML=rows.map(({q,a,s})=>`<li class="${s}" data-s="${s}"><div class="qh"><span class="qt">${esc(q.a)}</span><span class="tema">T${q.t}</span></div>
+   <div class="res"><span class="tag">${s==="ok"?"✓ Correcto":s==="bad"?"✗ Fallo":"– En blanco"}</span> · Respuesta correcta: <strong>${q.v?"VERDADERO":"FALSO"}</strong>${a===undefined?"":` · Tu respuesta: ${a?"V":"F"}`}
+   ${q.j?`<div class="just">${esc(q.j)}</div>`:""}</div></li>`).join("");
+  filt(false); show("result");
+}
+function filt(bad){$("fAll").setAttribute("aria-pressed",String(!bad));$("fBad").setAttribute("aria-pressed",String(bad));
+  $("rl").querySelectorAll("li").forEach(li=>li.classList.toggle("hidden",bad&&li.dataset.s==="ok"))}
+function home(){
+  const f=fails().length; $("bFail").disabled=!f;
+  $("failInfo").textContent=f?`Tienes ${f} afirmaciones falladas pendientes de repasar.`:"Cuando falles alguna, podrás hacer un simulacro solo con ellas.";
+  $("hist").innerHTML=st.h.length?`<table><thead><tr><th>Fecha</th><th>Nota</th><th>Aciertos / fallos / blanco</th></tr></thead><tbody>${st.h.map(x=>`<tr><td>${new Date(x.d).toLocaleString("es-ES",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</td><td class="n">${fmt(x.nota)}</td><td>${x.A} / ${x.F} / ${x.B} de ${x.N}</td></tr>`).join("")}</tbody></table>`:`<p class="note">Aún no has hecho ningún simulacro.</p>`;
+  $("bNew").textContent=st.draft?"Continuar simulacro empezado":"Empezar simulacro";
+  show("home");
+}
+$("bNew").onclick=()=>{if(st.draft){cur=st.draft;renderExam()}else start()};
+$("bFail").onclick=()=>start("fail");
+$("bGrade").onclick=()=>{const left=cur.ids.length-Object.keys(cur.ans).length;if(left&&!confirm(`Te quedan ${left} sin contestar (cuentan 0). ¿Corregir ya?`))return;grade()};
+$("bQuit").onclick=()=>{if(confirm("¿Salir y borrar este simulacro?")){st.draft=null;save();home()}};
+$("bAgain").onclick=()=>start(); $("bHome").onclick=home;
+$("fAll").onclick=()=>filt(false); $("fBad").onclick=()=>filt(true);
+home();
+</script>
+</body>
+</html>
